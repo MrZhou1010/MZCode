@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) MZCodeScanView *scanView;
 @property (nonatomic, strong) MZCodeScanTool *scanTool;
+
 @end
 
 @implementation ViewController
