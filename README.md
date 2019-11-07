@@ -6,6 +6,7 @@
 @property (nonatomic, strong) MZCodeScanTool *scanTool;
 
 // 构建扫描样式视图
+
     _scanView = [[MZCodeScanView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,            self.view.frame.size.height)];
     _scanView.backgroundColor = UIColor.clearColor;
     _scanView.scanRect = CGRectMake(80, 180, (self.view.frame.size.width - 2 * 80),  (self.view.frame.size.width - 2 * 80));
@@ -43,7 +44,8 @@
     [_scanTool sessionStartRunning];
     [_scanView startScanAnimation];
     
-    // 一句话生成二维码
+  // 一句话生成二维码
+  
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(30, 120, 300, 300)];
     NSString *myInfo = @"this is a test!";
     imageView.image = [MZCodeScanTool createQRCodeImageWithString:myInfo andSize:CGSizeMake(CGRectGetWidth(bgView.frame) - 32, 300) andBackColor:[UIColor whiteColor] andFrontColor:[UIColor blackColor] andCenterImage:[UIImage imageNamed:@"scanFlashlight"]];
