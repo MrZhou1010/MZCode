@@ -7,9 +7,9 @@
 
 // 构建扫描样式视图
 
-    _scanView = [[MZCodeScanView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width,            self.view.frame.size.height)];
+    _scanView = [[MZCodeScanView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
     _scanView.backgroundColor = UIColor.clearColor;
-    _scanView.scanRect = CGRectMake(80, 180, (self.view.frame.size.width - 2 * 80),  (self.view.frame.size.width - 2 * 80));
+    _scanView.scanRect = CGRectMake(80, 180, (self.view.frame.size.width - 2 * 80), (self.view.frame.size.width - 2 * 80));
     _scanView.angleColor = [UIColor blueColor];
     _scanView.isShowBorder = NO;
     _scanView.borderColor = [UIColor whiteColor];
