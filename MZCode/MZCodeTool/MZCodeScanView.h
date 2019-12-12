@@ -2,7 +2,7 @@
 //  MZCodeScanView.h
 //  MZCode
 //
-//  Created by 木木 on 2019/8/6.
+//  Created by Mr.Z on 2019/8/6.
 //  Copyright © 2019 Mr.Z. All rights reserved.
 //
 

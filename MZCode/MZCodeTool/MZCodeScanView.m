@@ -2,7 +2,7 @@
 //  MZCodeScanView.m
 //  MZCode
 //
-//  Created by 木木 on 2019/8/6.
+//  Created by Mr.Z on 2019/8/6.
 //  Copyright © 2019 Mr.Z. All rights reserved.
 //
 
@@ -34,6 +34,9 @@
 - (UIImageView *)scanLine {
     if (!_scanLine) {
         _scanLine = [[UIImageView alloc] initWithFrame:CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2)];
+        if (!self.animationImage) {
+            self.animationImage = [UIImage imageNamed:@"MZCode.bundle/scanLine"];
+        }
         _scanLine.image = self.animationImage;
         _scanLine.contentMode = UIViewContentModeScaleToFill;
     }
@@ -70,7 +73,7 @@
         _flashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
         _flashBtn.center = CGPointMake(self.frame.size.width / 2.0, self.scanRect.origin.y + self.scanRect.size.height - 40);
         _flashBtn.hidden = YES;
-        [_flashBtn setImage:[UIImage imageNamed:@"scanFlashlight"] forState:UIControlStateNormal];
+        [_flashBtn setImage:[UIImage imageNamed:@"MZCode.bundle/scanFlashlight"] forState:UIControlStateNormal];
         [_flashBtn addTarget:self action:@selector(flashBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_flashBtn];
     }

@@ -2,14 +2,13 @@
 //  ViewController.m
 //  MZCode
 //
-//  Created by 木木 on 2019/8/6.
+//  Created by Mr.Z on 2019/8/6.
 //  Copyright © 2019 Mr.Z. All rights reserved.
 //
 
 #import "ViewController.h"
 #import "MyQRCodeViewController.h"
-#import "MZCodeScanView.h"
-#import "MZCodeScanTool.h"
+#import "MZCode.h"
 
 @interface ViewController ()
 
@@ -35,11 +34,12 @@
     _scanView.isShowBorder = NO;
     _scanView.borderColor = [UIColor whiteColor];
     _scanView.notRecoginitonAreaColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    _scanView.animationImage = [UIImage imageNamed:@"scanLine"];
+    _scanView.animationImage = [UIImage imageNamed:@"MZCode.bundle/scanLine"];
     [self.view addSubview:_scanView];
     __weak typeof(self) weakSelf = self;
     _scanView.codeScanBlock = ^{
         MyQRCodeViewController *myQRCodeVC = [[MyQRCodeViewController alloc] init];
+        myQRCodeVC.modalPresentationStyle = UIModalPresentationFullScreen;
         [weakSelf presentViewController:myQRCodeVC animated:YES completion:nil];
     };
     
