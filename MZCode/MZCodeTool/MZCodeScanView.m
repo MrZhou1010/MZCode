@@ -30,7 +30,7 @@
 
 @implementation MZCodeScanView
 
-#pragma mark -- lazy
+#pragma mark - Lazy
 - (UIImageView *)scanLine {
     if (!_scanLine) {
         _scanLine = [[UIImageView alloc] initWithFrame:CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2)];
@@ -182,7 +182,7 @@
     CGContextStrokePath(context);
 }
 
-#pragma mark -- Notification
+#pragma mark - Notification
 - (void)appWillEnterForeground {
     [self startScanAnimation];
 }

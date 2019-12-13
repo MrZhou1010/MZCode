@@ -28,6 +28,7 @@
 
 @implementation MZCodeScanTool
 
+#pragma mark - Lazy
 - (AVCaptureDevice *)device {
     if (!_device) {
         _device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -111,7 +112,7 @@
     }
 }
 
-#pragma mark -- AVCaptureMetadataOutputObjectsDelegate
+#pragma mark - AVCaptureMetadataOutputObjectsDelegate
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     if (metadataObjects.count > 0) {
         AVMetadataMachineReadableCodeObject *metadataObject = metadataObjects.firstObject;
@@ -122,7 +123,7 @@
     }
 }
 
-#pragma mark -- AVCaptureVideoDataOutputSampleBufferDelegate
+#pragma mark - AVCaptureVideoDataOutputSampleBufferDelegate
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(nonnull CMSampleBufferRef)sampleBuffer fromConnection:(nonnull AVCaptureConnection *)connection {
     CFDictionaryRef metadataDict = CMCopyDictionaryOfAttachments(NULL, sampleBuffer, kCMAttachmentMode_ShouldPropagate);
     NSDictionary *metadata = [[NSMutableDictionary alloc] initWithDictionary:(__bridge NSDictionary *)metadataDict];
@@ -152,6 +153,7 @@
     }
 }
 
+#pragma mark - 生成二维码
 + (UIImage *)createQRCodeImageWithString:(NSString *)codeString andSize:(CGFloat)size {
     CIImage *codeCIImage = [self createQRCodeImageWithString:codeString];
     CGRect extent = CGRectIntegral(codeCIImage.extent);
