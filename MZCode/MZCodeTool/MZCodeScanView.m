@@ -92,6 +92,9 @@
         self.angleLineWidth = 4;
         self.angleBorderMargin = 2;
         self.angleColor = UIColor.greenColor;
+        self.isShowMyCode = YES;
+        self.isShowTipDescription = YES;
+        self.tipDescription = @"将二维码置于扫描框内，即可自动扫描";
     }
     return self;
 }
@@ -101,19 +104,24 @@
     [self drawScanRect];
     [self addSubview:self.scanLine];
     
-    UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20, rect.size.width, 40)];
-    descLabel.text = @"将二维码置于扫描框内，即可自动扫描";
-    descLabel.textColor = [UIColor whiteColor];
-    descLabel.textAlignment = NSTextAlignmentCenter;
-    descLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
-    [self addSubview:descLabel];
+    if (self.isShowTipDescription) {
+        UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20, rect.size.width, 40)];
+        descLabel.text = self.tipDescription;
+        descLabel.textColor = [UIColor whiteColor];
+        descLabel.textAlignment = NSTextAlignmentCenter;
+        descLabel.numberOfLines = 0;
+        descLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
+        [self addSubview:descLabel];
+    }
     
-    UIButton *myCode = [[UIButton alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20 + 40 + 10, rect.size.width, 20)];
-    myCode.titleLabel.font = [UIFont systemFontOfSize:15];
-    [myCode setTitle:@"我的二维码" forState:UIControlStateNormal];
-    [myCode setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
-    [myCode addTarget:self action:@selector(myCodeClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:myCode];
+    if (self.isShowMyCode) {
+        UIButton *myCode = [[UIButton alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20 + 40 + 10, rect.size.width, 20)];
+        myCode.titleLabel.font = [UIFont systemFontOfSize:15];
+        [myCode setTitle:@"我的二维码" forState:UIControlStateNormal];
+        [myCode setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+        [myCode addTarget:self action:@selector(myCodeClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:myCode];
+    }
     
     [MZNotificationDefault addObserver:self selector:@selector(appWillEnterBackground) name:UIApplicationWillResignActiveNotification object:nil];
     [MZNotificationDefault addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];

@@ -42,6 +42,12 @@ typedef void (^MZFlashSwitchBlock)(BOOL open);
 @property (nonatomic, strong, nullable) UIColor *notRecoginitonAreaColor;
 /** 闪光灯开关的状态 */
 @property (nonatomic, assign) BOOL flashOpen;
+/** 是否显示"我的二维码",默认YES */
+@property (nonatomic, assign) BOOL isShowMyCode;
+/** 是否显示描述信息,默认YES */
+@property (nonatomic, assign) BOOL isShowTipDescription;
+/** 描述信息 */
+@property (nonatomic, copy) NSString *tipDescription;
 
 /**
  *  开始扫描动画
