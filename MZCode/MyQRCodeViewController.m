@@ -20,7 +20,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
     self.view.backgroundColor = [UIColor darkGrayColor];
     [self createUI];
 }
@@ -31,13 +30,11 @@
     bgView.layer.cornerRadius = 5;
     bgView.layer.masksToBounds = YES;
     [self.view addSubview:bgView];
-    
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(30, 20, CGRectGetWidth(bgView.frame) - 60, 300)];
     NSString *myInfo = @"this is a test!";
     imageView.image = [MZCodeScanTool createQRCodeImageWithString:myInfo andSize:CGSizeMake(CGRectGetWidth(bgView.frame) - 60, 300) andBackColor:[UIColor whiteColor] andFrontColor:[UIColor blackColor] andCenterImage:[UIImage imageNamed:@"MZCode.bundle/scanFlashlight"]];
     [bgView addSubview:imageView];
     self.imageView = imageView;
-    
     UILabel *titleLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 350, CGRectGetWidth(bgView.frame), 50)];
     titleLab.text = @"扫一扫上面的二维码图案添加好友！";
     titleLab.textColor = [UIColor blackColor];
