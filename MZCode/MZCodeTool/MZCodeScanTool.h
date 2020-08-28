@@ -25,10 +25,10 @@ typedef void (^MZCodeMonitorLightBlock)(float brightness);
 
 @interface MZCodeScanTool : NSObject
 
-/** 扫描出结果后的回调，注意循环引用的问题 */
+/** 扫描出结果后的回调,注意循环引用的问题 */
 @property (nonatomic, copy) MZCodeScanFinishedBlock _Nullable scanFinishedBlock;
 
-/** 监听环境光感的回调，如果!= nil表示开启监测环境亮度功能  */
+/** 监听环境光感的回调,如果!= nil表示开启监测环境亮度功能  */
 @property (nonatomic, copy) MZCodeMonitorLightBlock _Nullable monitorLightBlock;
 
 /**
@@ -58,7 +58,7 @@ typedef void (^MZCodeMonitorLightBlock)(float brightness);
  *  识别图中二维码
  *  @param imageCode 二维码图片
  */
-- (void)scanImageQRCode:(UIImage *)imageCode;
+- (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure;
 
 /**
  生成自定义样式二维码

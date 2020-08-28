@@ -45,7 +45,11 @@
 
 - (UIActivityIndicatorView *)activityView {
     if (!_activityView) {
-        _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        if (@available(iOS 13.0, *)) {
+            _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+        } else {
+            _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        }
         _activityView.frame = CGRectMake(0, 0, self.scanRect.size.width, 40);
         [_activityView startAnimating];
     }

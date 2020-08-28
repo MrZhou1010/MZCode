@@ -50,10 +50,10 @@
     self.scanTool.monitorLightBlock = ^(float brightness) {
         NSLog(@"当前亮度 %lf", brightness);
         if (brightness < -2.0) {
-            // 环境太暗，显示闪光灯开关按钮
+            // 环境太暗,显示闪光灯开关按钮
             [weakSelf.scanView showFlashSwitch:YES];
         } else if (brightness > 0) {
-            // 环境亮度可以,且闪光灯处于关闭状态时，隐藏闪光灯开关
+            // 环境亮度可以,且闪光灯处于关闭状态时,隐藏闪光灯开关
             if(weakSelf.scanView.flashOpen) {
                 [weakSelf.scanView showFlashSwitch:NO];
             }

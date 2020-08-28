@@ -11,13 +11,13 @@
 
 @interface MZCodeScanTool () <AVCaptureMetadataOutputObjectsDelegate, AVCaptureVideoDataOutputSampleBufferDelegate>
 
-/** 捕获设备，默认后置摄像头 */
+/** 捕获设备,默认后置摄像头 */
 @property (nonatomic, strong) AVCaptureDevice *device;
-/** 输入设备，摄像头捕捉到的信息 */
+/** 输入设备,摄像头捕捉到的信息 */
 @property (nonatomic, strong) AVCaptureDeviceInput *input;
-/** 输出设备，需要指定他的输出类型及扫描范围 */
+/** 输出设备,需要指定他的输出类型及扫描范围 */
 @property (nonatomic, strong) AVCaptureMetadataOutput *output;
-/** 框架捕获类的中心枢纽，协调输入输出设备以获得数据 */
+/** 框架捕获类的中心枢纽,协调输入输出设备以获得数据 */
 @property (nonatomic, strong) AVCaptureSession *session;
 /** 展示输出流的视图——即照相机镜头下的内容 */
 @property (nonatomic, strong) UIView *preview;
@@ -108,7 +108,7 @@
         }
         [device unlockForConfiguration];
     } else {
-        // 当前设备没有闪光灯，不能提供手电筒功能
+        // 当前设备没有闪光灯,不能提供手电筒功能
     }
 }
 
@@ -139,7 +139,7 @@
 }
 
 // 识别图中二维码
-- (void)scanImageQRCode:(UIImage *)imageCode {
+- (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure {
     // 创建一个探测器
     CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{CIDetectorAccuracy:CIDetectorAccuracyHigh}];
     NSArray *featureArr = [detector featuresInImage:imageCode.CIImage options:nil];
@@ -150,6 +150,9 @@
         }
     } else {
         // 无法识别图中二维码
+        if (failure) {
+            failure(@"无法识别当前图片");
+        }
     }
 }
 
