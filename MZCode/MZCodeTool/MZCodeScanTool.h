@@ -28,7 +28,7 @@ typedef void (^MZCodeMonitorLightBlock)(float brightness);
 /** 扫描出结果后的回调,注意循环引用的问题 */
 @property (nonatomic, copy) MZCodeScanFinishedBlock _Nullable scanFinishedBlock;
 
-/** 监听环境光感的回调,如果!= nil表示开启监测环境亮度功能  */
+/** 监听环境光感的回调,如果!=nil表示开启监测环境亮度功能 */
 @property (nonatomic, copy) MZCodeMonitorLightBlock _Nullable monitorLightBlock;
 
 /**
@@ -50,34 +50,33 @@ typedef void (^MZCodeMonitorLightBlock)(float brightness);
 
 /**
  *  闪光灯开关
+ *  @param on 闪光灯开关
  */
 + (void)openFlashSwitch:(BOOL)on;
-
 
 /**
  *  识别图中二维码
  *  @param imageCode 二维码图片
+ *  @param failure 识别失败
  */
 - (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure;
 
 /**
- 生成自定义样式二维码
-
- @param codeString 字符串
- @param size 大小
- @return image 二维码
+ *  生成自定义样式二维码
+ *  @param codeString 字符串
+ *  @param size 大小
+ *  @return image 二维码
  */
 + (UIImage *)createQRCodeImageWithString:(NSString *)codeString andSize:(CGFloat)size;
 
 /**
- 生成自定义样式二维码
-
- @param codeString 字符串
- @param size 大小
- @param backColor 背景色
- @param frontColor 前景色
- @param centerImage 中心图片
- @return image 二维码
+ *  生成自定义样式二维码
+ *  @param codeString 字符串
+ *  @param size 大小
+ *  @param backColor 背景色
+ *  @param frontColor 前景色
+ *  @param centerImage 中心图片
+ *  @return image 二维码
  */
 + (UIImage *)createQRCodeImageWithString:(NSString *)codeString andSize:(CGSize)size andBackColor:(nullable UIColor *)backColor andFrontColor:(nullable UIColor *)frontColor andCenterImage:(nullable UIImage *)centerImage;
 

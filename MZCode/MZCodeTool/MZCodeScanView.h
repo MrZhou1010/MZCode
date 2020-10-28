@@ -16,7 +16,7 @@ typedef void (^MZFlashSwitchBlock)(BOOL open);
 
 @interface MZCodeScanView : UIView
 
-/** 点击我的二维码的回调 */
+/** 点击"我的二维码"的回调 */
 @property (nonatomic, copy) MZCodeScanBlock codeScanBlock;
 /** 打开/关闭闪光灯的回调 */
 @property (nonatomic, copy) MZFlashSwitchBlock flashSwitchBlock;

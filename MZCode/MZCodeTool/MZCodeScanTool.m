@@ -57,13 +57,17 @@
         // 创建环境光感输出流
         AVCaptureVideoDataOutput *lightOutput = [[AVCaptureVideoDataOutput alloc] init];
         [lightOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-        
         _session = [[AVCaptureSession alloc] init];
-        [_session setSessionPreset:AVCaptureSessionPresetHigh];
-        [_session addInput:input];
-        [_session addOutput:output];
-        [_session addOutput:lightOutput];
-        
+        if ([_session canSetSessionPreset:AVCaptureSessionPresetHigh]) {
+            [_session setSessionPreset:AVCaptureSessionPresetHigh];
+        }
+        if ([_session canAddInput:input]) {
+            [_session addInput:input];
+        }
+        if ([_session canAddOutput:output]) {
+            [_session addOutput:output];
+            [_session addOutput:lightOutput];
+        }
         // 设置扫码支持的编码格式(条形码和二维码)
         output.metadataObjectTypes = @[AVMetadataObjectTypeQRCode, AVMetadataObjectTypeEAN13Code, AVMetadataObjectTypeEAN8Code, AVMetadataObjectTypeCode128Code];
     }
@@ -95,23 +99,6 @@
     [self.session stopRunning];
 }
 
-+ (void)openFlashSwitch:(BOOL)on {
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if ([device hasTorch] && [device hasFlash]) {
-        [device lockForConfiguration:nil];
-        if (on) {
-            device.torchMode = AVCaptureTorchModeOn;
-            device.flashMode = AVCaptureFlashModeOn;
-        } else {
-            device.torchMode = AVCaptureTorchModeOff;
-            device.flashMode = AVCaptureFlashModeOff;
-        }
-        [device unlockForConfiguration];
-    } else {
-        // 当前设备没有闪光灯,不能提供手电筒功能
-    }
-}
-
 #pragma mark - AVCaptureMetadataOutputObjectsDelegate
 - (void)captureOutput:(AVCaptureOutput *)output didOutputMetadataObjects:(NSArray<__kindof AVMetadataObject *> *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
     if (metadataObjects.count > 0) {
@@ -130,7 +117,7 @@
     CFRelease(metadataDict);
     NSDictionary *exifMetadata = [[metadata objectForKey:(NSString *)kCGImagePropertyExifDictionary] mutableCopy];
     float brightnessValue = [[exifMetadata objectForKey:(NSString *)kCGImagePropertyExifBrightnessValue] floatValue];
-    if (brightnessValue < -8) {
+    if (brightnessValue < -8.0) {
         [[self class] openFlashSwitch:YES];
     }
     if (self.monitorLightBlock) {
@@ -138,13 +125,31 @@
     }
 }
 
+// 闪光灯开关
++ (void)openFlashSwitch:(BOOL)on {
+    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if ([device hasTorch] && [device hasFlash]) {
+        [device lockForConfiguration:nil];
+        if (on) {
+            device.torchMode = AVCaptureTorchModeOn;
+            device.flashMode = AVCaptureFlashModeOn;
+        } else {
+            device.torchMode = AVCaptureTorchModeOff;
+            device.flashMode = AVCaptureFlashModeOff;
+        }
+        [device unlockForConfiguration];
+    } else {
+        // 当前设备没有闪光灯,不能提供手电筒功能
+    }
+}
+
 // 识别图中二维码
 - (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure {
     // 创建一个探测器
-    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{CIDetectorAccuracy:CIDetectorAccuracyHigh}];
-    NSArray *featureArr = [detector featuresInImage:imageCode.CIImage options:nil];
-    if (featureArr.count > 0) {
-        CIQRCodeFeature *codeFeature = (CIQRCodeFeature *)featureArr.firstObject;
+    CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{CIDetectorAccuracy: CIDetectorAccuracyHigh}];
+    NSArray *featureArray = [detector featuresInImage:imageCode.CIImage options:nil];
+    if (featureArray.count > 0) {
+        CIQRCodeFeature *codeFeature = (CIQRCodeFeature *)featureArray.firstObject;
         if(self.scanFinishedBlock) {
             self.scanFinishedBlock(codeFeature.messageString);
         }
@@ -164,7 +169,7 @@
     size_t width = CGRectGetWidth(extent) * scale;
     size_t height = CGRectGetHeight(extent) * scale;
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    CGContextRef bitmapRef = CGBitmapContextCreate(nil, width, height, 8, 0, colorSpace, (CGBitmapInfo)kCGImageAlphaNone);
+    CGContextRef bitmapRef = CGBitmapContextCreate(nil, width, height, 8.0, 0, colorSpace, (CGBitmapInfo)kCGImageAlphaNone);
     CGImageRef bitmapImage = [[CIContext contextWithOptions:nil] createCGImage:codeCIImage fromRect:extent];
     CGContextSetInterpolationQuality(bitmapRef, kCGInterpolationNone);
     CGContextScaleCTM(bitmapRef, scale, scale);
@@ -196,7 +201,7 @@
     if (centerImage) {
         UIGraphicsBeginImageContext(colorCodeImage.size);
         [colorCodeImage drawInRect:CGRectMake(0, 0, colorCodeImage.size.width, colorCodeImage.size.height)];
-        CGFloat imageW = 50;
+        CGFloat imageW = 50.0;
         CGFloat imageX = (colorCodeImage.size.width - imageW) * 0.5;
         CGFloat imgaeY = (colorCodeImage.size.height - imageW) * 0.5;
         UIImage *centerImg = centerImage;
@@ -208,8 +213,8 @@
     return colorCodeImage;
 }
 
-+ (CIImage *)createQRCodeImageWithString:(NSString *)qrString {
-    NSData *codeData = [qrString dataUsingEncoding:NSUTF8StringEncoding];
++ (CIImage *)createQRCodeImageWithString:(NSString *)codeString {
+    NSData *codeData = [codeString dataUsingEncoding:NSUTF8StringEncoding];
     CIFilter *filter = [CIFilter filterWithName:@"CIQRCodeGenerator"];
     [filter setDefaults];
     [filter setValue:codeData forKey:@"inputMessage"];

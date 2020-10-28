@@ -33,7 +33,7 @@
 #pragma mark - Lazy
 - (UIImageView *)scanLine {
     if (!_scanLine) {
-        _scanLine = [[UIImageView alloc] initWithFrame:CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2)];
+        _scanLine = [[UIImageView alloc] initWithFrame:CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2.0)];
         if (!self.animationImage) {
             self.animationImage = [UIImage imageNamed:@"MZCode.bundle/scanLine"];
         }
@@ -50,7 +50,7 @@
         } else {
             _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         }
-        _activityView.frame = CGRectMake(0, 0, self.scanRect.size.width, 40);
+        _activityView.frame = CGRectMake(0, 0, self.scanRect.size.width, 40.0);
         [_activityView startAnimating];
     }
     return _activityView;
@@ -58,11 +58,10 @@
 
 - (UIView *)handlingView {
     if (!_handlingView) {
-        _handlingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.scanRect.size.width, 80)];
+        _handlingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.scanRect.size.width, 80.0)];
         _handlingView.center = CGPointMake(self.frame.size.width / 2.0, self.scanRect.origin.y + self.scanRect.size.height / 2.0);
         [_handlingView addSubview:self.activityView];
-        
-        UILabel *handleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.scanRect.size.width, 40)];
+        UILabel *handleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40.0, self.scanRect.size.width, 40.0)];
         handleLabel.font = [UIFont systemFontOfSize:12];
         handleLabel.textAlignment = NSTextAlignmentCenter;
         handleLabel.textColor = [UIColor whiteColor];
@@ -74,8 +73,8 @@
 
 - (UIButton *)flashBtn {
     if (!_flashBtn) {
-        _flashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-        _flashBtn.center = CGPointMake(self.frame.size.width / 2.0, self.scanRect.origin.y + self.scanRect.size.height - 40);
+        _flashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40.0, 40.0)];
+        _flashBtn.center = CGPointMake(self.frame.size.width / 2.0, self.scanRect.origin.y + self.scanRect.size.height - 40.0);
         _flashBtn.hidden = YES;
         [_flashBtn setImage:[UIImage imageNamed:@"MZCode.bundle/scanFlashlight"] forState:UIControlStateNormal];
         [_flashBtn addTarget:self action:@selector(flashBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -87,14 +86,14 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
         self.backgroundColor = [UIColor clearColor];
-        self.scanRect = CGRectMake(60, 100, frame.size.width - 2 * 60, frame.size.width - 2 * 60);
+        self.scanRect = CGRectMake(60.0, 100.0, frame.size.width - 2.0 * 60.0, frame.size.width - 2.0 * 60.0);
         self.isShowBorder = YES;
         self.borderColor = UIColor.clearColor;
         self.notRecoginitonAreaColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-        self.angleWidth = 20;
-        self.angleHeight = 20;
-        self.angleLineWidth = 4;
-        self.angleBorderMargin = 2;
+        self.angleWidth = 20.0;
+        self.angleHeight = 20.0;
+        self.angleLineWidth = 4.0;
+        self.angleBorderMargin = 2.0;
         self.angleColor = UIColor.greenColor;
         self.isShowMyCode = YES;
         self.isShowTipDescription = YES;
@@ -107,9 +106,8 @@
     [super drawRect:rect];
     [self drawScanRect];
     [self addSubview:self.scanLine];
-    
     if (self.isShowTipDescription) {
-        UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20, rect.size.width, 40)];
+        UILabel *descLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20.0, rect.size.width, 40.0)];
         descLabel.text = self.tipDescription;
         descLabel.textColor = [UIColor whiteColor];
         descLabel.textAlignment = NSTextAlignmentCenter;
@@ -119,14 +117,13 @@
     }
     
     if (self.isShowMyCode) {
-        UIButton *myCode = [[UIButton alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20 + 40 + 10, rect.size.width, 20)];
+        UIButton *myCode = [[UIButton alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20.0 + 40.0 + 10.0, rect.size.width, 20.0)];
         myCode.titleLabel.font = [UIFont systemFontOfSize:15];
         [myCode setTitle:@"我的二维码" forState:UIControlStateNormal];
         [myCode setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
         [myCode addTarget:self action:@selector(myCodeClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:myCode];
     }
-    
     [MZNotificationDefault addObserver:self selector:@selector(appWillEnterBackground) name:UIApplicationWillResignActiveNotification object:nil];
     [MZNotificationDefault addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
@@ -172,25 +169,25 @@
     CGContextSetStrokeColorWithColor(context, self.angleColor.CGColor);
     CGContextSetLineWidth(context, self.angleLineWidth);
     // 左上角
-    CGContextMoveToPoint(context, xMin - self.angleLineWidth - self.angleBorderMargin, yMin - self.angleLineWidth / 2 - self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMin - self.angleLineWidth + self.angleWidth - self.angleBorderMargin, yMin - self.angleLineWidth / 2 - self.angleBorderMargin);
-    CGContextMoveToPoint(context, xMin - self.angleLineWidth / 2 - self.angleBorderMargin, yMin - self.angleLineWidth - self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMin - self.angleLineWidth / 2 - self.angleBorderMargin, yMin - self.angleLineWidth + self.angleHeight - self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMin - self.angleLineWidth - self.angleBorderMargin, yMin - self.angleLineWidth / 2.0 - self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMin - self.angleLineWidth + self.angleWidth - self.angleBorderMargin, yMin - self.angleLineWidth / 2.0 - self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMin - self.angleLineWidth / 2.0 - self.angleBorderMargin, yMin - self.angleLineWidth - self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMin - self.angleLineWidth / 2.0 - self.angleBorderMargin, yMin - self.angleLineWidth + self.angleHeight - self.angleBorderMargin);
     // 左下角
-    CGContextMoveToPoint(context, xMin - self.angleLineWidth - self.angleBorderMargin, yMax + self.angleLineWidth / 2 + self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMin - self.angleLineWidth + self.angleWidth - self.angleBorderMargin, yMax + self.angleLineWidth / 2 + self.angleBorderMargin);
-    CGContextMoveToPoint(context, xMin - self.angleLineWidth / 2 - self.angleBorderMargin, yMax + self.angleLineWidth + self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMin - self.angleLineWidth / 2 - self.angleBorderMargin, yMax + self.angleLineWidth - self.angleHeight + self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMin - self.angleLineWidth - self.angleBorderMargin, yMax + self.angleLineWidth / 2.0 + self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMin - self.angleLineWidth + self.angleWidth - self.angleBorderMargin, yMax + self.angleLineWidth / 2.0 + self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMin - self.angleLineWidth / 2.0 - self.angleBorderMargin, yMax + self.angleLineWidth + self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMin - self.angleLineWidth / 2.0 - self.angleBorderMargin, yMax + self.angleLineWidth - self.angleHeight + self.angleBorderMargin);
     // 右上角
-    CGContextMoveToPoint(context, xMax + self.angleLineWidth + self.angleBorderMargin, yMin - self.angleLineWidth / 2 - self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMax + self.angleLineWidth - self.angleWidth + self.angleBorderMargin, yMin - self.angleLineWidth / 2 - self.angleBorderMargin);
-    CGContextMoveToPoint(context, xMax + self.angleLineWidth / 2 + self.angleBorderMargin, yMin - self.angleLineWidth - self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMax + self.angleLineWidth / 2 + self.angleBorderMargin, yMin - self.angleLineWidth + self.angleHeight - self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMax + self.angleLineWidth + self.angleBorderMargin, yMin - self.angleLineWidth / 2.0 - self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMax + self.angleLineWidth - self.angleWidth + self.angleBorderMargin, yMin - self.angleLineWidth / 2.0 - self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMax + self.angleLineWidth / 2.0 + self.angleBorderMargin, yMin - self.angleLineWidth - self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMax + self.angleLineWidth / 2.0 + self.angleBorderMargin, yMin - self.angleLineWidth + self.angleHeight - self.angleBorderMargin);
     // 右下角
-    CGContextMoveToPoint(context, xMax + self.angleLineWidth + self.angleBorderMargin, yMax + self.angleLineWidth / 2 + self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMax + self.angleLineWidth - self.angleWidth + self.angleBorderMargin, yMax + self.angleLineWidth / 2 + self.angleBorderMargin);
-    CGContextMoveToPoint(context, xMax + self.angleLineWidth / 2 + self.angleBorderMargin, yMax + self.angleLineWidth + self.angleBorderMargin);
-    CGContextAddLineToPoint(context, xMax + self.angleLineWidth / 2 + self.angleBorderMargin, yMax + self.angleLineWidth - self.angleHeight + self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMax + self.angleLineWidth + self.angleBorderMargin, yMax + self.angleLineWidth / 2.0 + self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMax + self.angleLineWidth - self.angleWidth + self.angleBorderMargin, yMax + self.angleLineWidth / 2.0 + self.angleBorderMargin);
+    CGContextMoveToPoint(context, xMax + self.angleLineWidth / 2.0 + self.angleBorderMargin, yMax + self.angleLineWidth + self.angleBorderMargin);
+    CGContextAddLineToPoint(context, xMax + self.angleLineWidth / 2.0 + self.angleBorderMargin, yMax + self.angleLineWidth - self.angleHeight + self.angleBorderMargin);
     CGContextStrokePath(context);
 }
 
@@ -212,17 +209,17 @@
 }
 
 - (void)stopScanAnimation {
-    self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2);
+    self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2.0);
     self.isAnimating = NO;
     [self.scanLine.layer removeAllAnimations];
 }
 
 - (void)startScan {
     [UIView animateWithDuration:3.0 animations:^{
-        self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y + self.scanRect.size.height - 2, self.scanRect.size.width, 2);
+        self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y + self.scanRect.size.height - 2.0, self.scanRect.size.width, 2.0);
     } completion:^(BOOL finished) {
         if (finished) {
-            self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2);
+            self.scanLine.frame = CGRectMake(self.scanRect.origin.x, self.scanRect.origin.y, self.scanRect.size.width, 2.0);
             [self performSelector:@selector(startScan) withObject:nil afterDelay:0.05];
         }
     }];
