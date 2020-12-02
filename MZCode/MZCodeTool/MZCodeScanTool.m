@@ -125,7 +125,7 @@
     }
 }
 
-// 闪光灯开关
+/// 闪光灯开关
 + (void)openFlashSwitch:(BOOL)on {
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if ([device hasTorch] && [device hasFlash]) {
@@ -143,7 +143,7 @@
     }
 }
 
-// 识别图中二维码
+/// 识别图中二维码
 - (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure {
     // 创建一个探测器
     CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{CIDetectorAccuracy: CIDetectorAccuracyHigh}];
@@ -161,29 +161,24 @@
     }
 }
 
-#pragma mark - 生成二维码
-+ (UIImage *)createQRCodeImageWithString:(NSString *)codeString andSize:(CGFloat)size {
+#pragma mark - 生成二维码和条形码
++ (UIImage *)createQRCodeImageWithString:(NSString *)codeString size:(CGSize)size {
     CIImage *codeCIImage = [self createQRCodeImageWithString:codeString];
-    CGRect extent = CGRectIntegral(codeCIImage.extent);
-    CGFloat scale = MIN(size / CGRectGetWidth(extent), size / CGRectGetHeight(extent));
-    size_t width = CGRectGetWidth(extent) * scale;
-    size_t height = CGRectGetHeight(extent) * scale;
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-    CGContextRef bitmapRef = CGBitmapContextCreate(nil, width, height, 8.0, 0, colorSpace, (CGBitmapInfo)kCGImageAlphaNone);
-    CGImageRef bitmapImage = [[CIContext contextWithOptions:nil] createCGImage:codeCIImage fromRect:extent];
-    CGContextSetInterpolationQuality(bitmapRef, kCGInterpolationNone);
-    CGContextScaleCTM(bitmapRef, scale, scale);
-    CGContextDrawImage(bitmapRef, extent, bitmapImage);
-    CGImageRef scaledImage = CGBitmapContextCreateImage(bitmapRef);
-    CGContextRelease(bitmapRef);
-    CGImageRelease(bitmapImage);
-    return [UIImage imageWithCGImage:scaledImage];
+    UIImage *codeImage = [self resizeCodeImage:codeCIImage size:size];
+    return codeImage;
 }
 
-+ (UIImage *)createQRCodeImageWithString:(NSString *)codeString andSize:(CGSize)size andBackColor:(nullable UIColor *)backColor andFrontColor:(nullable UIColor *)frontColor andCenterImage:(nullable UIImage *)centerImage {
++ (UIImage *)createBarCodeImageWithString:(NSString *)codeString size:(CGSize)size {
+    CIImage *codeCIImage = [self createBarCodeImageWithString:codeString];
+    UIImage *codeImage = [self resizeCodeImage:codeCIImage size:size];
+    return codeImage;
+}
+
++ (UIImage *)createQRCodeImageWithString:(NSString *)codeString size:(CGSize)size frontColor:(nullable UIColor *)frontColor backColor:(nullable UIColor *)backColor centerImage:(nullable UIImage *)centerImage {
     CIImage *codeCIImage = [self createQRCodeImageWithString:codeString];
-    CGRect extent = CGRectIntegral(codeCIImage.extent);
-    CGImageRef codeCGImage = [[CIContext contextWithOptions:nil] createCGImage:codeCIImage fromRect:extent];
+    CIImage *colorCodeCIImage = [self drawCodeImage:codeCIImage frontColor:frontColor backColor:backColor];
+    CGRect extent = CGRectIntegral(colorCodeCIImage.extent);
+    CGImageRef codeCGImage = [[CIContext contextWithOptions:nil] createCGImage:colorCodeCIImage fromRect:extent];
     UIGraphicsBeginImageContext(size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetInterpolationQuality(context, kCGInterpolationNone);
@@ -192,27 +187,22 @@
     UIImage *codeImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     CGImageRelease(codeCGImage);
-    // 绘制颜色
-    CIColor *frontCIColor = [CIColor colorWithCGColor:frontColor == nil ? [UIColor clearColor].CGColor: frontColor.CGColor];
-    CIColor *backCIColor = [CIColor colorWithCGColor: backColor == nil ? [UIColor blackColor].CGColor : backColor.CGColor];
-    CIFilter *colorFilter = [CIFilter filterWithName:@"CIFalseColor" keysAndValues:@"inputImage", [CIImage imageWithCGImage:codeImage.CGImage], @"inputColor0", frontCIColor, @"inputColor1", backCIColor, nil];
-    UIImage *colorCodeImage = [UIImage imageWithCIImage:colorFilter.outputImage];
     // 添加中心图片
     if (centerImage) {
-        UIGraphicsBeginImageContext(colorCodeImage.size);
-        [colorCodeImage drawInRect:CGRectMake(0, 0, colorCodeImage.size.width, colorCodeImage.size.height)];
-        CGFloat imageW = 50.0;
-        CGFloat imageX = (colorCodeImage.size.width - imageW) * 0.5;
-        CGFloat imgaeY = (colorCodeImage.size.height - imageW) * 0.5;
-        UIImage *centerImg = centerImage;
-        [centerImg drawInRect:CGRectMake(imageX, imgaeY, imageW, imageW)];
+        UIGraphicsBeginImageContext(codeImage.size);
+        [codeImage drawInRect:CGRectMake(0, 0, codeImage.size.width, codeImage.size.height)];
+        CGFloat imageX = (codeImage.size.width - centerImage.size.width) * 0.5;
+        CGFloat imgaeY = (codeImage.size.height - centerImage.size.height) * 0.5;
+        UIImage *tempCenterImage = centerImage;
+        [tempCenterImage drawInRect:CGRectMake(imageX, imgaeY, centerImage.size.width, centerImage.size.height)];
         UIImage *centerCodeImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return centerCodeImage;
     }
-    return colorCodeImage;
+    return codeImage;
 }
 
+/// 生成二维码图
 + (CIImage *)createQRCodeImageWithString:(NSString *)codeString {
     NSData *codeData = [codeString dataUsingEncoding:NSUTF8StringEncoding];
     CIFilter *filter = [CIFilter filterWithName:@"CIQRCodeGenerator"];
@@ -220,6 +210,46 @@
     [filter setValue:codeData forKey:@"inputMessage"];
     [filter setValue:@"H" forKey:@"inputCorrectionLevel"];
     return filter.outputImage;
+}
+
+/// 生成条形码图
++ (CIImage *)createBarCodeImageWithString:(NSString *)codeString {
+    NSData *codeData = [codeString dataUsingEncoding:NSASCIIStringEncoding];
+    CIFilter *filter = [CIFilter filterWithName:@"CICode128BarcodeGenerator"];
+    [filter setDefaults];
+    [filter setValue:codeData forKey:@"inputMessage"];
+    [filter setValue:@(0) forKey:@"inputQuietSpace"];
+    return filter.outputImage;
+}
+
+/// 处理生成的码
++ (UIImage *)resizeCodeImage:(CIImage *)codeCIImage size:(CGSize)size {
+    CGRect extent = CGRectIntegral(codeCIImage.extent);
+    CGFloat widthScale = size.width / CGRectGetWidth(extent);
+    CGFloat heightScale = size.height / CGRectGetHeight(extent);
+    size_t width = CGRectGetWidth(extent) * widthScale;
+    size_t height = CGRectGetHeight(extent) * heightScale;
+    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceGray();
+    CGContextRef contentRef = CGBitmapContextCreate(nil, width, height, 8.0, 0, colorSpaceRef, (CGBitmapInfo)kCGImageAlphaNone);
+    CGImageRef imageRef = [[CIContext contextWithOptions:nil] createCGImage:codeCIImage fromRect:extent];
+    CGContextSetInterpolationQuality(contentRef, kCGInterpolationNone);
+    CGContextScaleCTM(contentRef, widthScale, heightScale);
+    CGContextDrawImage(contentRef, extent, imageRef);
+    CGImageRef scaledImage = CGBitmapContextCreateImage(contentRef);
+    UIImage *codeImage = [UIImage imageWithCGImage:scaledImage];
+    CGColorSpaceRelease(colorSpaceRef);
+    CGContextRelease(contentRef);
+    CGImageRelease(imageRef);
+    CGImageRelease(scaledImage);
+    return codeImage;
+}
+
+/// 绘制颜色
++ (CIImage *)drawCodeImage:(CIImage *)codeCIImage frontColor:(UIColor *)frontColor backColor:(UIColor *)backColor {
+    CIColor *frontCIColor = [CIColor colorWithCGColor:frontColor == nil ? [UIColor clearColor].CGColor : frontColor.CGColor];
+    CIColor *backCIColor = [CIColor colorWithCGColor:backColor == nil ? [UIColor blackColor].CGColor : backColor.CGColor];
+    CIFilter *colorFilter = [CIFilter filterWithName:@"CIFalseColor" keysAndValues:@"inputImage", codeCIImage, @"inputColor0", frontCIColor, @"inputColor1", backCIColor, nil];
+    return colorFilter.outputImage;
 }
 
 @end

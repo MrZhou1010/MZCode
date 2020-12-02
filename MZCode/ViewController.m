@@ -7,13 +7,13 @@
 //
 
 #import "ViewController.h"
-#import "MyQRCodeViewController.h"
-#import "MZCode.h"
+#import "MZCodeScanViewController.h"
+#import "MZQRCodeViewController.h"
+#import "MZBarCodeViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) MZCodeScanView *scanView;
-@property (nonatomic, strong) MZCodeScanTool *scanTool;
+@property (nonatomic, copy) NSArray *dataSource;
 
 @end
 
@@ -22,49 +22,51 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    UIView *preview = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    [self.view addSubview:preview];
-    // 构建扫描样式视图
-    self.scanView = [[MZCodeScanView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
-    self.scanView.backgroundColor = UIColor.clearColor;
-    self.scanView.scanRect = CGRectMake(80, 180, (self.view.frame.size.width - 2 * 80),  (self.view.frame.size.width - 2 * 80));
-    self.scanView.angleColor = [UIColor blueColor];
-    self.scanView.isShowBorder = NO;
-    self.scanView.borderColor = [UIColor whiteColor];
-    self.scanView.notRecoginitonAreaColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-    self.scanView.animationImage = [UIImage imageNamed:@"MZCode.bundle/scanLine"];
-    self.scanView.isShowMyCode = YES;
-    self.scanView.tipDescription = @"将二维码放于框内\n即可自动扫描";
-    [self.view addSubview:self.scanView];
-    __weak typeof(self) weakSelf = self;
-    self.scanView.codeScanBlock = ^{
-        MyQRCodeViewController *myQRCodeVC = [[MyQRCodeViewController alloc] init];
-        myQRCodeVC.modalPresentationStyle = UIModalPresentationFullScreen;
-        [weakSelf presentViewController:myQRCodeVC animated:YES completion:nil];
-    };
-    self.scanTool = [[MZCodeScanTool alloc] initWithPreview:preview andScanFrame:self.scanView.scanRect];
-    self.scanTool.scanFinishedBlock = ^(NSString *scanString) {
-        NSLog(@"扫描结果 %@", scanString);
-        [weakSelf.scanTool sessionStopRunning];
-    };
-    self.scanTool.monitorLightBlock = ^(float brightness) {
-        NSLog(@"当前亮度 %lf", brightness);
-        if (brightness < -2.0) {
-            // 环境太暗,显示闪光灯开关按钮
-            [weakSelf.scanView showFlashSwitch:YES];
-        } else if (brightness > 0) {
-            // 环境亮度可以,且闪光灯处于关闭状态时,隐藏闪光灯开关
-            if(weakSelf.scanView.flashOpen) {
-                [weakSelf.scanView showFlashSwitch:NO];
-            }
-        }
-    };
-    [self.scanTool sessionStartRunning];
-    [self.scanView startScanAnimation];
+    self.navigationItem.title = @"Code";
+    self.dataSource = @[@"二维码扫描", @"生成二维码", @"生成条形码"];
+    [self setupUI];
 }
 
-- (void)viewDidDisappear:(BOOL)animated {
-    [self.scanTool sessionStopRunning];
+- (void)setupUI {
+    UITableView *tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    tableView.backgroundColor = [UIColor whiteColor];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    tableView.tableFooterView = [[UIView alloc] init];
+    [self.view addSubview:tableView];
+}
+
+#pragma mark - ITableViewDelegate, UITableViewDataSource
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.dataSource.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellId"];
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cellId"];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    cell.textLabel.text = self.dataSource[indexPath.row];
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return 60;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row == 0) {
+        [self.navigationController pushViewController:[MZCodeScanViewController new] animated:YES];
+    } else if (indexPath.row == 1) {
+        [self.navigationController pushViewController:[MZQRCodeViewController new] animated:YES];
+    } else if (indexPath.row == 2) {
+        [self.navigationController pushViewController:[MZBarCodeViewController new] animated:YES];
+    }
 }
 
 @end

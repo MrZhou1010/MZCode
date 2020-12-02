@@ -25,6 +25,8 @@
 @property (nonatomic, strong) UIButton *flashBtn;
 /** 是否正在动画 */
 @property (nonatomic, assign) BOOL isAnimating;
+/** 闪光灯开关的状态 */
+@property (nonatomic, assign, readwrite) BOOL flashOpen;
 
 @end
 
@@ -76,7 +78,10 @@
         _flashBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40.0, 40.0)];
         _flashBtn.center = CGPointMake(self.frame.size.width / 2.0, self.scanRect.origin.y + self.scanRect.size.height - 40.0);
         _flashBtn.hidden = YES;
-        [_flashBtn setImage:[UIImage imageNamed:@"MZCode.bundle/scanFlashlight"] forState:UIControlStateNormal];
+        if (!self.flashLightImage) {
+            self.flashLightImage = [UIImage imageNamed:@"MZCode.bundle/scanFlashlight"];
+        }
+        [_flashBtn setImage:self.flashLightImage forState:UIControlStateNormal];
         [_flashBtn addTarget:self action:@selector(flashBtnClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_flashBtn];
     }
@@ -115,7 +120,6 @@
         descLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
         [self addSubview:descLabel];
     }
-    
     if (self.isShowMyCode) {
         UIButton *myCode = [[UIButton alloc] initWithFrame:CGRectMake(0, self.scanRect.origin.y + self.scanRect.size.height + 20.0 + 40.0 + 10.0, rect.size.width, 20.0)];
         myCode.titleLabel.font = [UIFont systemFontOfSize:15];
@@ -128,13 +132,7 @@
     [MZNotificationDefault addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
-- (void)myCodeClicked:(UIButton *)btn {
-    if(self.codeScanBlock){
-        self.codeScanBlock();
-    }
-}
-
-// 绘制扫描区域
+/// 绘制扫描区域
 - (void)drawScanRect {
     CGSize scanSize = self.scanRect.size;
     CGFloat yMin = self.scanRect.origin.y;
@@ -158,7 +156,6 @@
     CGContextFillRect(context, rightRect);
     // 执行绘画
     CGContextStrokePath(context);
-    
     if (self.isShowBorder) {
         CGContextSetStrokeColorWithColor(context, self.borderColor.CGColor);
         CGContextSetLineWidth(context, 1.0);
@@ -191,6 +188,22 @@
     CGContextStrokePath(context);
 }
 
+/// 点击"我的二维码"按钮事件
+- (void)myCodeClicked:(UIButton *)btn {
+    if (self.codeScanBlock) {
+        self.codeScanBlock();
+    }
+}
+
+/// 点击闪光灯按钮事件
+- (void)flashBtnClicked:(UIButton *)flashBtn {
+    self.flashOpen = !self.flashOpen;
+    [MZCodeScanTool openFlashSwitch:self.flashOpen];
+    if (self.flashSwitchBlock) {
+        self.flashSwitchBlock(self.flashOpen);
+    }
+}
+
 #pragma mark - Notification
 - (void)appWillEnterForeground {
     [self startScanAnimation];
@@ -200,6 +213,7 @@
     [self stopScanAnimation];
 }
 
+#pragma mark - Function
 - (void)startScanAnimation {
     if (self.isAnimating) {
         return;
@@ -225,7 +239,7 @@
     }];
 }
 
-// 正在处理扫描到的结果
+/// 正在处理扫描到的结果
 - (void)handlingResultsOfScan {
     if (!self.handlingView) {
         [self addSubview:self.handlingView];
@@ -233,7 +247,7 @@
     [self.activityView startAnimating];
 }
 
-// 完成扫描结果处理
+/// 完成扫描结果处理
 - (void)handledResultsOfScan {
     [self.activityView stopAnimating];
     [self.activityView removeFromSuperview];
@@ -242,24 +256,9 @@
     self.handlingView = nil;
 }
 
-// 是否显示闪光灯开关
+/// 是否显示闪光灯开关
 - (void)showFlashSwitch:(BOOL)show {
-    if (show) {
-        self.flashBtn.hidden = NO;
-        self.flashOpen = YES;
-    } else {
-        self.flashBtn.hidden = YES;
-        self.flashOpen = NO;
-    }
-}
-
-// 点击闪光灯按钮事件
-- (void)flashBtnClicked:(UIButton *)flashBtn {
-    [MZCodeScanTool openFlashSwitch:self.flashOpen];
-    if (self.flashSwitchBlock) {
-        self.flashSwitchBlock(self.flashOpen);
-    }
-    self.flashOpen = !self.flashOpen;
+    self.flashBtn.hidden = !show;
 }
 
 - (void)dealloc {

@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B4189B18257782B800490A36 /* MZBarCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B4189B17257782B800490A36 /* MZBarCodeViewController.m */; };
+		B4189B1E2577833C00490A36 /* MZCodeScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B4189B1D2577833C00490A36 /* MZCodeScanViewController.m */; };
 		B41A5E732317756100B3468B /* MZCodeScanTool.m in Sources */ = {isa = PBXBuildFile; fileRef = B41A5E722317756100B3468B /* MZCodeScanTool.m */; };
-		B42D32242372AA0C00957703 /* MyQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B42D32232372AA0C00957703 /* MyQRCodeViewController.m */; };
+		B42D32242372AA0C00957703 /* MZQRCodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B42D32232372AA0C00957703 /* MZQRCodeViewController.m */; };
 		B4A8161522F959C700F83A19 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B4A8161422F959C700F83A19 /* AppDelegate.m */; };
 		B4A8161822F959C700F83A19 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B4A8161722F959C700F83A19 /* ViewController.m */; };
 		B4A8161B22F959C800F83A19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4A8161922F959C800F83A19 /* Main.storyboard */; };
@@ -39,10 +41,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B4189B16257782B800490A36 /* MZBarCodeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MZBarCodeViewController.h; sourceTree = "<group>"; };
+		B4189B17257782B800490A36 /* MZBarCodeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MZBarCodeViewController.m; sourceTree = "<group>"; };
+		B4189B1C2577833C00490A36 /* MZCodeScanViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MZCodeScanViewController.h; sourceTree = "<group>"; };
+		B4189B1D2577833C00490A36 /* MZCodeScanViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MZCodeScanViewController.m; sourceTree = "<group>"; };
 		B41A5E712317756100B3468B /* MZCodeScanTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MZCodeScanTool.h; sourceTree = "<group>"; };
 		B41A5E722317756100B3468B /* MZCodeScanTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MZCodeScanTool.m; sourceTree = "<group>"; };
-		B42D32222372AA0C00957703 /* MyQRCodeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyQRCodeViewController.h; sourceTree = "<group>"; };
-		B42D32232372AA0C00957703 /* MyQRCodeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyQRCodeViewController.m; sourceTree = "<group>"; };
+		B42D32222372AA0C00957703 /* MZQRCodeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MZQRCodeViewController.h; sourceTree = "<group>"; };
+		B42D32232372AA0C00957703 /* MZQRCodeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MZQRCodeViewController.m; sourceTree = "<group>"; };
 		B4A8161022F959C700F83A19 /* MZCode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MZCode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4A8161322F959C700F83A19 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B4A8161422F959C700F83A19 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -90,6 +96,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B4189B222577849800490A36 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				B4189B1C2577833C00490A36 /* MZCodeScanViewController.h */,
+				B4189B1D2577833C00490A36 /* MZCodeScanViewController.m */,
+				B42D32222372AA0C00957703 /* MZQRCodeViewController.h */,
+				B42D32232372AA0C00957703 /* MZQRCodeViewController.m */,
+				B4189B16257782B800490A36 /* MZBarCodeViewController.h */,
+				B4189B17257782B800490A36 /* MZBarCodeViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		B4A8160722F959C700F83A19 = {
 			isa = PBXGroup;
 			children = (
@@ -113,13 +132,12 @@
 		B4A8161222F959C700F83A19 /* MZCode */ = {
 			isa = PBXGroup;
 			children = (
+				B4189B222577849800490A36 /* Controller */,
 				B4A8164522F95B4200F83A19 /* MZCodeTool */,
 				B4A8161322F959C700F83A19 /* AppDelegate.h */,
 				B4A8161422F959C700F83A19 /* AppDelegate.m */,
 				B4A8161622F959C700F83A19 /* ViewController.h */,
 				B4A8161722F959C700F83A19 /* ViewController.m */,
-				B42D32222372AA0C00957703 /* MyQRCodeViewController.h */,
-				B42D32232372AA0C00957703 /* MyQRCodeViewController.m */,
 				B4A8161922F959C800F83A19 /* Main.storyboard */,
 				B4A8161C22F959CA00F83A19 /* Assets.xcassets */,
 				B4A8161E22F959CA00F83A19 /* LaunchScreen.storyboard */,
@@ -222,7 +240,7 @@
 		B4A8160822F959C700F83A19 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = Mr.Z;
 				TargetAttributes = {
 					B4A8160F22F959C700F83A19 = {
@@ -291,11 +309,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B42D32242372AA0C00957703 /* MyQRCodeViewController.m in Sources */,
+				B42D32242372AA0C00957703 /* MZQRCodeViewController.m in Sources */,
 				B4A8161822F959C700F83A19 /* ViewController.m in Sources */,
 				B4A8164822F95BAF00F83A19 /* MZCodeScanView.m in Sources */,
+				B4189B1E2577833C00490A36 /* MZCodeScanViewController.m in Sources */,
 				B41A5E732317756100B3468B /* MZCodeScanTool.m in Sources */,
 				B4A8162322F959CA00F83A19 /* main.m in Sources */,
+				B4189B18257782B800490A36 /* MZBarCodeViewController.m in Sources */,
 				B4A8161522F959C700F83A19 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -377,6 +397,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -402,7 +423,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -436,6 +457,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -455,7 +477,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
