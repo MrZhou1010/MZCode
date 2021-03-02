@@ -87,7 +87,6 @@
     AVCaptureVideoPreviewLayer *previewLayer = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
     previewLayer.frame = self.preview.layer.bounds;
     previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-    [self.preview.layer addSublayer:previewLayer];
     [self.preview.layer insertSublayer:previewLayer atIndex:0];
 }
 
@@ -144,10 +143,10 @@
 }
 
 /// 识别图中二维码
-- (void)scanImageQRCode:(UIImage *)imageCode failure:(void (^)(NSString * _Nullable errString))failure {
+- (void)scanQRCodeImage:(UIImage *)codeImage failure:(void (^)(NSString * __nullable errString))failure {
     // 创建一个探测器
     CIDetector *detector = [CIDetector detectorOfType:CIDetectorTypeQRCode context:nil options:@{CIDetectorAccuracy: CIDetectorAccuracyHigh}];
-    NSArray *featureArray = [detector featuresInImage:imageCode.CIImage options:nil];
+    NSArray *featureArray = [detector featuresInImage:codeImage.CIImage options:nil];
     if (featureArray.count > 0) {
         CIQRCodeFeature *codeFeature = (CIQRCodeFeature *)featureArray.firstObject;
         if(self.scanFinishedBlock) {
@@ -174,7 +173,7 @@
     return codeImage;
 }
 
-+ (UIImage *)createQRCodeImageWithString:(NSString *)codeString size:(CGSize)size frontColor:(nullable UIColor *)frontColor backColor:(nullable UIColor *)backColor centerImage:(nullable UIImage *)centerImage {
++ (UIImage *)createQRCodeImageWithString:(NSString *)codeString size:(CGSize)size frontColor:(UIColor * __nullable)frontColor backColor:(UIColor * __nullable)backColor centerImage:(UIImage * __nullable)centerImage {
     CIImage *codeCIImage = [self createQRCodeImageWithString:codeString];
     CIImage *colorCodeCIImage = [self drawCodeImage:codeCIImage frontColor:frontColor backColor:backColor];
     CGRect extent = CGRectIntegral(colorCodeCIImage.extent);
@@ -246,8 +245,8 @@
 
 /// 绘制颜色
 + (CIImage *)drawCodeImage:(CIImage *)codeCIImage frontColor:(UIColor *)frontColor backColor:(UIColor *)backColor {
-    CIColor *frontCIColor = [CIColor colorWithCGColor:frontColor == nil ? [UIColor clearColor].CGColor : frontColor.CGColor];
-    CIColor *backCIColor = [CIColor colorWithCGColor:backColor == nil ? [UIColor blackColor].CGColor : backColor.CGColor];
+    CIColor *frontCIColor = [CIColor colorWithCGColor:!frontColor ? [UIColor clearColor].CGColor : frontColor.CGColor];
+    CIColor *backCIColor = [CIColor colorWithCGColor:!backColor ? [UIColor blackColor].CGColor : backColor.CGColor];
     CIFilter *colorFilter = [CIFilter filterWithName:@"CIFalseColor" keysAndValues:@"inputImage", codeCIImage, @"inputColor0", frontCIColor, @"inputColor1", backCIColor, nil];
     return colorFilter.outputImage;
 }

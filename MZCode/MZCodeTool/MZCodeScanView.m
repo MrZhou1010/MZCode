@@ -9,8 +9,6 @@
 #import "MZCodeScanView.h"
 #import "MZCodeScanTool.h"
 
-#define MZNotificationDefault [NSNotificationCenter defaultCenter]
-
 @interface MZCodeScanView ()
 
 /** 动画线条 */
@@ -128,8 +126,8 @@
         [myCode addTarget:self action:@selector(myCodeClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:myCode];
     }
-    [MZNotificationDefault addObserver:self selector:@selector(appWillEnterBackground) name:UIApplicationWillResignActiveNotification object:nil];
-    [MZNotificationDefault addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterBackground) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 /// 绘制扫描区域
@@ -241,15 +239,19 @@
 
 /// 正在处理扫描到的结果
 - (void)handlingResultsOfScan {
-    if (!self.handlingView) {
+    if (self.handlingView) {
         [self addSubview:self.handlingView];
     }
-    [self.activityView startAnimating];
+    if (!self.activityView.animating) {
+        [self.activityView startAnimating];
+    }
 }
 
 /// 完成扫描结果处理
 - (void)handledResultsOfScan {
-    [self.activityView stopAnimating];
+    if (self.activityView.animating) {
+        [self.activityView stopAnimating];
+    }
     [self.activityView removeFromSuperview];
     self.activityView = nil;
     [self.handlingView removeFromSuperview];
@@ -264,7 +266,7 @@
 - (void)dealloc {
     [self stopScanAnimation];
     [self handledResultsOfScan];
-    [MZNotificationDefault removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end

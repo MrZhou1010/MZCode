@@ -19,11 +19,20 @@
 
 @implementation ViewController
 
+#pragma mark - lazy
+- (NSArray *)dataSource {
+    if (!_dataSource) {
+        _dataSource = @[@"二维码扫描",
+                        @"生成二维码",
+                        @"生成条形码"];
+    }
+    return _dataSource;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    self.navigationItem.title = @"Code";
-    self.dataSource = @[@"二维码扫描", @"生成二维码", @"生成条形码"];
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = @"二维码和条形码";
     [self setupUI];
 }
 
@@ -36,7 +45,7 @@
     [self.view addSubview:tableView];
 }
 
-#pragma mark - ITableViewDelegate, UITableViewDataSource
+#pragma mark - UITableViewDelegate, UITableViewDataSource
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -57,7 +66,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 60;
+    return 60.0;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -49,7 +49,7 @@ typedef void (^MZFlashSwitchBlock)(BOOL open);
 /// 动画效果的图像
 @property (nonatomic, strong, nullable) UIImage *animationImage;
 
-/// 动画效果的图像
+/// 闪光灯效果的图像
 @property (nonatomic, strong, nullable) UIImage *flashLightImage;
 
 /// 非识别区域颜色,默认RGBA(0, 0, 0, 0.5)
