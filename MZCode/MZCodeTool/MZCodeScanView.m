@@ -100,7 +100,7 @@
         self.angleColor = UIColor.greenColor;
         self.isShowMyCode = YES;
         self.isShowTipDescription = YES;
-        self.tipDescription = @"将二维码置于扫描框内，即可自动扫描";
+        self.tipDescription = @"将二维码置于扫描框内\n即可自动扫描";
     }
     return self;
 }
